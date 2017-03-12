@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "express": "^4.15.2",
+    "glob": "^7.1.1"
+  },
+  "scripts": {
+    "start": "node ./bin/run.js"
+  }
+}
