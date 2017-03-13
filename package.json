@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "express": "^4.15.2",
-    "glob": "^7.1.1"
+    "glob": "^7.1.1",
+    "mongoose": "^4.8.7"
   },
   "scripts": {
     "start": "node ./bin/run.js"

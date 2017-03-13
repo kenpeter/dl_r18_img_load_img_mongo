@@ -8,13 +8,14 @@ var Schema = mongodb.mongoose.Schema;
 var Promise = require('es6-promise').Promise;
 
 var ImageSchema = new Schema({
-    id: { type: String, index: true },
     fileName : String,
-    filePath : String
+    filePath : String,
+    createdDate: { type: Date, default: Date.now },
+    updatedDate: { type: Date, default: Date.now }
 });
 
 var ImageDAO = function(){};
-var Image = mongodb.mongoose.model('Image', ArticleSchema);
+var Image = mongodb.mongoose.model('Image', ImageSchema);
 
 // empty func, prototype
 ImageDAO.prototype =  {
@@ -39,8 +40,24 @@ ImageDAO.prototype =  {
         resolve();
       });
     });
-  } // end save
+  }, // end save
 
+  delete: function(query) {
+    // return new promise
+    // func, resolve, reject
+    return new Promise(function(resolve, reject){
+      // article
+      // .remove
+      // query, what is query
+      // func, err, data
+      Image.remove(query, function(err, data){
+        // if err, return, reject, err
+        if(err) return reject(err)
+        // resolve data
+        resolve(data);
+      });
+    });
+  },
 };
 
 // module

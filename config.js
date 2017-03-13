@@ -28,5 +28,8 @@ module.exports = {
               auto_reconnect: true
           }
       }
+  },
+  imgRootPath: {
+    path: '/var/www/html/test/testme/dl_r18_img/upload/**/*.jpg'
   }
 }
