@@ -9,6 +9,9 @@ const PromiseChain = require('es6-promise-chain');
 // db config
 const config = require('../../config');
 
+//
+var mongodb = require('../db/connect');
+
 // image
 const ImageDAO = require('../db/models/image');
 // because ImageDAO has a constructor.
@@ -25,50 +28,19 @@ const Task = {
   fire: function() {
     this.delete()
       .then(() => {
-        console.log("then importing...");
-        this.import().then(() => {
-          console.log('--- all done ---');
-          process.exit(1);
-        });
+        this.createCategory()
+          .then(() => {
+            console.log("---- now import ---");
+            this.import().then(() => {
+              console.log('--- all done ---');
+              process.exit(1);
+            });
+          });
 
         // I cannot call exit here, because IO is above, need to use callback.
         //process.exit(1);
       });
   },
-
-  /*
-  import: function() {
-    let imgDir = config.imgRootPath.paths;
-    let options = {};
-    glob(imgDir, options, (er, files) => {
-      // all files ready
-    	//console.log(files);
-      let filesPromise = files.map(this.saveToDB);
-
-      // http://www.datchley.name/es6-promises/
-      Promise.all(filesPromise)
-        .then((res) => {
-          console.log("Finish import image to mongodb");
-          // Here we get out!!!!!!!!!!!!!!!!!!!!!!!!!
-          process.exit(0);
-        });
-    });
-  },
-  */
-
-  /*
-  import: function() {
-    let imgDirs = config.imgRootPath.paths;
-    let globPromise = imgDirs.map(this.globEach);
-    Promise.all(globPromise)
-      .then((res) => {
-        console.log("Finish import image to mongodb");
-        // Here we get out!!!!!!!!!!!!!!!!!!!!!!!!!
-        process.exit(0);
-      });
-
-  },
-  */
 
   import: function() {
     let imgDirs = config.imgRootPath.paths;
@@ -81,8 +53,12 @@ const Task = {
 
         glob(globPath, options, (er, files) => {
           // all files ready
-        	//console.log("no.....?");
-          let filesPromise = files.map(that.saveToDB);
+          let filesPromise = files.map((x) => {
+            // Have to return here, in fact, there are lots of time, I need to return
+            // because, need to return ......
+            // https://stackoverflow.com/questions/12344087/using-javascript-map-with-a-function-that-has-two-arguments
+            return that.saveToDB(x, mongodb.mongoose.Types.ObjectId());
+          });
 
           // http://www.datchley.name/es6-promises/
           return Promise.all(filesPromise)
@@ -110,25 +86,7 @@ const Task = {
 
   },
 
-  globEach: function(item) {
-    let globPath = item;
-    //console.log(item);
-    let options = {};
-
-    glob(globPath, options, (er, files) => {
-      // all files ready
-    	console.log("no.....?");
-      let filesPromise = files.map(this.saveToDB);
-
-      // http://www.datchley.name/es6-promises/
-      return Promise.all(filesPromise)
-        .then((res) => {
-          console.log("Finish: " + globPath);
-        });
-    });
-  },
-
-  saveToDB: function (item){
+  saveToDB: function (item, category) {
     let filePath = item;
     let arr = item.split('/');
     let fileName = arr[arr.length - 1];
@@ -136,11 +94,36 @@ const Task = {
     //console.log(filePath, fileName);
     let data = {
       fileName: fileName,
-      filePath: filePath
+      filePath: filePath,
+      categoryId: category
     };
 
     return imageDAO.save(data);
+  },
+
+  createCategory: function() {
+    let arr = [
+      "tmp_cr",
+      "tmp_bt"
+    ];
+
+    return PromiseChain.forEach(arr, (category) => {
+      return new Promise(function(resolve, reject){
+        let data = {
+          name: category
+        };
+
+        categoryDAO.save(data).then(() => {
+          console.log("save category: " + category);
+          resolve();
+        })
+      });
+    });
+
   }
+
 }
+
+
 
 module.exports = Task;
