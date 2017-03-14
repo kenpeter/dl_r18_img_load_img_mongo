@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "es6-promise-chain": "^1.0.10",
     "express": "^4.15.2",
     "glob": "^7.1.1",
     "mongoose": "^4.8.7"

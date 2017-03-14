@@ -94,6 +94,10 @@ encodeurl@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/encodeurl/-/encodeurl-1.0.1.tgz#79e3d58655346909fe6f0f45a5de68103b294d20"
 
+es6-promise-chain@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/es6-promise-chain/-/es6-promise-chain-1.0.10.tgz#e384fffa7dccd5c27abecd7be3881d4cdeb2bf69"
+
 es6-promise@3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-3.2.1.tgz#ec56233868032909207170c39448e24449dd1fc4"

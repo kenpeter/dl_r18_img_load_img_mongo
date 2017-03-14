@@ -1,4 +1,6 @@
-// mongodb, which is the mongoose instance
+// Why do we connect mongo db here
+// because when we import a model, this var is global
+// so will be executed.
 var mongodb = require('../connect');
 // mongoose schema, used as new Schema
 var Schema = mongodb.mongoose.Schema;
@@ -7,21 +9,19 @@ var Schema = mongodb.mongoose.Schema;
 // es6 promise, other promise lib
 var Promise = require('es6-promise').Promise;
 
-var ImageSchema = new Schema({
-  fileName : String,
-  filePath : String,
-  categoryId: Schema.Types.ObjectId,
+var CategorySchema = new Schema({
+  name: String,
   createdDate: { type: Date, default: Date.now },
   updatedDate: { type: Date, default: Date.now }
 });
 
 // constructor
-var ImageDAO = function(){};
-var Image = mongodb.mongoose.model('Image', ImageSchema);
+var CategoryDAO = function(){};
+var Category = mongodb.mongoose.model('Category', CategorySchema);
 
 // empty func, prototype
-ImageDAO.prototype =  {
-  constructor: ImageDAO,
+CategoryDAO.prototype =  {
+  constructor: CategoryDAO,
 
   save: function(obj){
     // return new promise
@@ -31,7 +31,7 @@ ImageDAO.prototype =  {
       // var instace
       // new Aritcle, obj
       // obj from above
-      var instance = new Image(obj);
+      var instance = new Category(obj);
       // instance
       // .save
       // func, err
@@ -52,7 +52,7 @@ ImageDAO.prototype =  {
       // .remove
       // query, what is query
       // func, err, data
-      Image.remove(query, function(err, data){
+      Category.remove(query, function(err, data){
         // if err, return, reject, err
         if(err) return reject(err)
         // resolve data
@@ -65,4 +65,4 @@ ImageDAO.prototype =  {
 // module
 // .exports
 // article dao
-module.exports = ImageDAO;
+module.exports = CategoryDAO;
