@@ -44,6 +44,16 @@ CategoryDAO.prototype =  {
     });
   }, // end save
 
+  findByName: function(name) {
+    // always use promise
+    return new Promise(function(resolve, reject){
+      Category.findOne({name: name}, function(err, data){
+        if(err) return reject(err);
+        resolve(data);
+      });
+    });
+  },
+
   delete: function(query) {
     // return new promise
     // func, resolve, reject

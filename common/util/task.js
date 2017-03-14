@@ -51,22 +51,38 @@ const Task = {
         //console.log(item);
         let options = {};
 
-        glob(globPath, options, (er, files) => {
-          // all files ready
-          let filesPromise = files.map((x) => {
-            // Have to return here, in fact, there are lots of time, I need to return
-            // because, need to return ......
-            // https://stackoverflow.com/questions/12344087/using-javascript-map-with-a-function-that-has-two-arguments
-            return that.saveToDB(x, mongodb.mongoose.Types.ObjectId());
-          });
+        // e.g. /var/www/html/test/testme/dl_r18_img/upload/tmp_bt/*.jpg
+        let categoryName = imgDir.split('/')[8]; // remember the first slash
+        //test
+        console.log("cat name: " + categoryName);
 
-          // http://www.datchley.name/es6-promises/
-          return Promise.all(filesPromise)
-            .then((res) => {
-              console.log("Finish: " + globPath);
-              resolve();
+        categoryDAO.findByName(categoryName)
+          .then((catObj) => {
+            let catId = catObj._id;
+
+            //test
+            //console.log("catid: " + catId);
+            //resolve();
+
+            glob(globPath, options, (er, files) => {
+
+              // all files ready
+              let filesPromise = files.map((x) => {
+                // Have to return here, in fact, there are lots of time, I need to return
+                // because, need to return ......
+                // https://stackoverflow.com/questions/12344087/using-javascript-map-with-a-function-that-has-two-arguments
+                return that.saveToDB(x, catId);
+              });
+
+              // http://www.datchley.name/es6-promises/
+              return Promise.all(filesPromise)
+                .then((res) => {
+                  console.log("Finish: " + globPath);
+                  resolve();
+                });
             });
-        });
+
+          });
 
       });
     });
