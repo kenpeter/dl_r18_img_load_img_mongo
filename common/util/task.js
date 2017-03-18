@@ -26,6 +26,7 @@ const categoryDAO = new CategoryDAO();
 const Task = {
   // main entry method, fire
   fire: function() {
+    /*
     this.delete()
       .then(() => {
         this.createCategory()
@@ -39,6 +40,20 @@ const Task = {
 
         // I cannot call exit here, because IO is above, need to use callback.
         //process.exit(1);
+      });
+    */
+
+    this.delete()
+      .then(() => {
+        return this.createCategory();
+      })
+      .then(() => {
+        console.log("---- now import ---");
+        return this.import();
+      })
+      .then(() => {
+        console.log('--- all done ---');
+        process.exit(1);
       });
   },
 
@@ -58,20 +73,17 @@ const Task = {
 
         categoryDAO.findByName(categoryName)
           .then((catObj) => {
-            let catId = catObj._id;
-
-            //test
-            //console.log("catid: " + catId);
-            //resolve();
 
             glob(globPath, options, (er, files) => {
+
+              //console.log(catObj);
 
               // all files ready
               let filesPromise = files.map((x) => {
                 // Have to return here, in fact, there are lots of time, I need to return
                 // because, need to return ......
                 // https://stackoverflow.com/questions/12344087/using-javascript-map-with-a-function-that-has-two-arguments
-                return that.saveToDB(x, catId);
+                return that.saveToDB(x, catObj);
               });
 
               // http://www.datchley.name/es6-promises/
@@ -102,7 +114,7 @@ const Task = {
 
   },
 
-  saveToDB: function (item, category) {
+  saveToDB: function (item, catObj) {
     let filePath = item;
     let arr = item.split('/');
     let fileName = arr[arr.length - 1];
@@ -111,7 +123,7 @@ const Task = {
     let data = {
       fileName: fileName,
       filePath: filePath,
-      categoryId: category
+      category: catObj
     };
 
     return imageDAO.save(data);

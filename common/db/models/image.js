@@ -10,7 +10,7 @@ var Promise = require('es6-promise').Promise;
 var ImageSchema = new Schema({
   fileName : String,
   filePath : String,
-  categoryId: Schema.Types.ObjectId,
+  category: { type: Schema.Types.ObjectId, ref: 'Category' },
   createdDate: { type: Date, default: Date.now },
   updatedDate: { type: Date, default: Date.now }
 });
